@@ -5,14 +5,18 @@ import time
 from datetime import datetime, timedelta
 import requests
 
+import settings
+
 class MonzoAuth():
 
     def __init__(self):
 
-        self.account_id = r'acc_xxxxx'
-        self.client_id = r'oauth2client_xxxxx'
-        self.client_secret = r'xxxxx'
-        self.redirect_uri = 'http://127.0.0.1:21234/'
+        # Monzo auth settings
+        self.account_id = settings.ACCOUNT_ID
+        self.client_id = settings.CLIENT_ID
+        self.client_secret = settings.CLIENT_SECRET
+        self.redirect_uri = settings.REDIRECT_URI
+
         self.state = uuid.uuid4().hex
         self.access_token = None
 
@@ -49,7 +53,7 @@ class MonzoAuth():
 
         # Wait for user to enter response in terminal...
         response_url = input('Paste in the URL Monzo email redirects to...')
-        response_url = response_url.replace('http://127.0.0.1:21234/?', '')
+        response_url = response_url.replace(self.redirect_uri + '?', '')
 
         params = response_url.split('&')
         response_values = {}
