@@ -103,17 +103,16 @@ class Parse():
 
 		for match in re.finditer(self.re_fmt.re_line_item, email_body, re.M):
 			line_item = copy.deepcopy(line_item_format)
-			line_item['description'] = match.group('line_item')
+			line_item['description'] = match.group('description')
 			line_item['amount'] = int(float(match.group('amount')) * 100)
 			line_item['quantity'] = int(match.group('qty'))
 
 			line_items.append(line_item)
 
 		# Attempt to get discount if applicable
-		discounts = self.re_fmt.get_discount(email_body)
-		for discount in discounts:
+		for discount in self.re_fmt.get_discounts(email_body):
 			line_item = copy.deepcopy(line_item_format)
-			line_item['description'] = discount['name']
+			line_item['description'] = discount['description']
 			line_item['amount'] = int(float(discount['amount']) * 100)
 
 			line_item['amount'] = abs(line_item['amount']) * -1
