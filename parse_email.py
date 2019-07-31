@@ -69,16 +69,11 @@ class Parse():
 
 		# Extract merchant name and date from email so we can find the matching
 		# Monzo transaction.
-		email_from = re.search(r'From: ".*"', email_body).group()
-		merchant_name = re.search(
-			r'(["\'])((?:\\\1|.)*?)\1',
-			email_from
-		).group(2).lower()
+		merchant_name = self.get_merchant_name_from_email(email_body)
 
-		if merchant_name:
-			receipt['merchant_name'] = merchant_name
-		else:
+		if not merchant_name:
 			raise Exception('No merchant name found')
+		receipt['merchant_name'] = merchant_name
 
 		day, month, year = re.search(
 			r'Date: ([0-9]*) (.*) ([0-9]{4})',
@@ -121,6 +116,12 @@ class Parse():
 			line_items.append(line_item)
 
 		return line_items
+
+	def get_merchant_name_from_email(self, email_body):
+		"""Return the merchant name from an email"""
+		return re.search(
+			r'From: (?P<from>.*)(,|<)', email_body
+		).group('from').replace('"', '').strip()
 	
 	def run(self):
 
@@ -148,13 +149,9 @@ class Parse():
 
 			# Get merchant name from email so we know which regex expression
 			# to use to parse email.
-			email_from = re.search(r'From: ".*"', email_body).group()
-			merchant_name = re.search(
-				r'(["\'])((?:\\\1|.)*?)\1',
-				email_from
-			).group(2).lower()
+			merchant_name = self.get_merchant_name_from_email(email_body)
 
-			if not email_from:
+			if not merchant_name:
 				raise Exception('No merchant name found')
 
 			self.re_fmt = RegexFormat(merchant_name)
