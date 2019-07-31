@@ -32,7 +32,8 @@ class MonzoRequest():
 		# Find single transaction by merchant name, date & total.
 
 		merchant_name_map = {
-			'asos orders': 'asos'
+			'asos orders': 'asos',
+			'gymshark uk': 'gymshark'
 		}
 
 		# Get transactions

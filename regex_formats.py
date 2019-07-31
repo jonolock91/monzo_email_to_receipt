@@ -19,6 +19,9 @@ class RegexFormat():
 		else:
 			raise Exception('Regex format not found for ', merchant_name)
 
+		# Defaults
+		self.re_discounts = []
+
 	def example_merchant(self):
 		"""
 		Each method should map to the merchant name we extract from the email
@@ -39,6 +42,10 @@ class RegexFormat():
 			(r'^Discount.*\n(?P<amount>[\d,]+(?:\.\d+)?)', 'Discount'),
 			(r'^Gift Voucher.*\n(?P<amount>[-\d,]+(?:\.\d+)?)', 'Gift voucher')
 		]
+
+	def gymshark_uk(self):
+		self.re_total = r'^Total.*\n£([\d,]+(?:\.\d+)?)'
+		self.re_line_item = r'(?P<description>.*)\nQuantity: (?P<qty>[0-9]{1}).*\n(?P<size>.*)\n£(?P<amount>[\d,]+(?:\.\d+)?)'
 
 	def get_discounts(self, email_body):
 		discounts = []
