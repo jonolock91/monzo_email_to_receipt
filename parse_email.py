@@ -99,7 +99,7 @@ class Parse():
 		for match in re.finditer(self.re_fmt.re_line_item, email_body, re.M):
 			line_item = copy.deepcopy(line_item_format)
 			line_item['description'] = match.group('description')
-			line_item['amount'] = int(float(match.group('amount')) * 100)
+			line_item['amount'] = round(float(match.group('amount')) * 100)
 			line_item['quantity'] = int(match.group('qty'))
 
 			line_items.append(line_item)
@@ -108,7 +108,7 @@ class Parse():
 		for discount in self.re_fmt.get_discounts(email_body):
 			line_item = copy.deepcopy(line_item_format)
 			line_item['description'] = discount['description']
-			line_item['amount'] = int(float(discount['amount']) * 100)
+			line_item['amount'] = round(float(discount['amount']) * 100)
 
 			line_item['amount'] = abs(line_item['amount']) * -1
 			line_item['quantity'] = 1
@@ -116,6 +116,15 @@ class Parse():
 			line_items.append(line_item)
 
 		return line_items
+
+	def get_delivery(self, email_body):
+		if self.re_fmt.re_delivery:
+			amount = re.search(self.re_fmt.re_delivery, email_body, re.M).group(1)
+			line_item = copy.deepcopy(line_item_format)
+			line_item['description'] = 'Delivery'
+			line_item['amount'] = round(float(amount) * 100)
+			return line_item
+		return None
 
 	def get_merchant_name_from_email(self, email_body):
 		"""Return the merchant name from an email"""
@@ -156,9 +165,13 @@ class Parse():
 
 			self.re_fmt = RegexFormat(merchant_name)
 
-			# Get total price and line items
+			# Get total price, line items and delivery
 			total_price = self.get_total(email_body)
 			line_items = self.get_line_items(email_body)
+
+			delivery = self.get_delivery(email_body)
+			if delivery:
+				line_items.append(delivery)
 
 			# Create Monzo receipt
 			receipt = self.assemble_receipt(email_body, line_items, total_price)
