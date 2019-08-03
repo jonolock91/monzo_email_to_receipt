@@ -33,7 +33,8 @@ class MonzoRequest():
 
 		merchant_name_map = {
 			'asos orders': 'asos',
-			'gymshark uk': 'gymshark'
+			'gymshark uk': 'gymshark',
+			'myprotein': 'myprotein'
 		}
 
 		# Get transactions
