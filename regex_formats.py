@@ -29,7 +29,8 @@ class RegexFormat():
 		"From: xyz" string.
 		"""
 		self.re_total = 'regex' # Order total
-		self.re_line_item  = 'regex' # Each line item: description, amount, qty
+		self.re_line_item = 'regex' # Each line item: description, amount, qty
+		self.re_delivery = 'regex' # Delivery cost
 
 		# Represents each line item which reduces the order total, such as:
 		# free delivery, discount code, sale.
