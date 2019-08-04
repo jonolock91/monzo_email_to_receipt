@@ -28,31 +28,49 @@ class MonzoRequest():
 		r_json = r.json()
 		return r_json['transactions']
 
-	def find_transaction(self, merchant_name, transaction_date, total_amount):
+	def find_transaction(self, email_merchant_name, transaction_date, total_amount):
 		# Find single transaction by merchant name, date & total.
-
-		merchant_name_map = {
-			'asos orders': 'asos',
-			'gymshark uk': 'gymshark',
-			'myprotein': 'myprotein'
-		}
 
 		# Get transactions
 		if not self.transactions:
 			self.transactions = self.get_transactions()
 
 		matching_transaction = None
+		possible_matches_count = 0
+
 		for transaction in self.transactions:
 			if transaction['merchant'] is None:
 				continue
 
+			# First try to match the transaction to the email using the date
+			# and total price.
 			if (
-				transaction['merchant']['name'].lower() == merchant_name_map[merchant_name] and
 				transaction['amount'] == -total_amount and
 				transaction['created'].startswith(transaction_date)
 			):
-				matching_transaction = transaction
-				break
+
+				# If merchant name matches we have a confirmed match
+				if (transaction['merchant']['name'].lower() in \
+					email_merchant_name.lower()
+				):
+						matching_transaction = transaction
+						break
+
+				# If the merchant name doesn't match (e.g. eBay transactions
+				# aren't marked up as eBay on Monzo), but the date and total
+				# price do, then store it as a possible match, if no other
+				# transactions match we'll use this as a match.
+				else:
+					matching_transaction = transaction
+					possible_matches_count += 1
+
+			# More than 1 possible match found
+			if possible_matches_count > 1:
+				raise Exception(
+					possible_matches_count,
+					'possible matches found, can\t confirm which one is an \
+					exact match'
+				)
 
 		# Push to Monzo
 		if matching_transaction:

@@ -100,7 +100,11 @@ class Parse():
 			line_item = copy.deepcopy(line_item_format)
 			line_item['description'] = match.group('description')
 			line_item['amount'] = round(float(match.group('amount')) * 100)
-			line_item['quantity'] = int(match.group('qty'))
+
+			try:
+				line_item['quantity'] = int(match.group('qty'))
+			except IndexError as e:
+				line_item['quantity'] = 1
 
 			line_items.append(line_item)
 
@@ -179,7 +183,7 @@ class Parse():
 			# Find the transaction from Monzo which matches the date we have
 			# in our receipt, based on merchant name, date and total price.
 			transaction = monzo_requests.find_transaction(
-				receipt['merchant_name'].lower(),
+				receipt['merchant_name'],
 				receipt['email_received'],
 				receipt['total']
 			)
