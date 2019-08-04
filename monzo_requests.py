@@ -68,7 +68,7 @@ class MonzoRequest():
 			if possible_matches_count > 1:
 				raise Exception(
 					possible_matches_count,
-					'possible matches found, can\t confirm which one is an \
+					'possible matches found, can\'t confirm which one is an \
 					exact match'
 				)
 

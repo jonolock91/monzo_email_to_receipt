@@ -14,7 +14,7 @@ This project is built in python and to be ran with python 3.
 
 This has been built to parse .txt emails as I found this much easier to work with over HTML emails. I've been manually saving my emails as .txt and pasting them into the `emails` directory, this could be automated in the future.
 
-Currently only a few merchant emails are supports but there's room to expand and add more easily enough. I initially tried to make the email parsing as generic as possible but found that by making it specific per brand (e.g. Asos) it was much quicker to write a regex expression to find the important data, i.e Total & line items.
+Currently only a few merchant emails are supported but there's room to expand and add more easily enough. I initially tried to make the email parsing as generic as possible but found that by making it specific per brand (e.g. Asos) it was much quicker to write a regex expression to find the important data, i.e Total & line items.
 
 This project handles all the Monzo authentication needed so just fill in with your Monzo creds which you can get over at their API. [Monzo developer](https://developers.monzo.com).
 > The access token and potentially a few other methods I've used have been for speedy development and are not the most secure, but this is not a commercial project.
