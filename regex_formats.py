@@ -45,6 +45,10 @@ class RegexFormat():
 			(r'^Gift Voucher.*\n(?P<amount>[-\d,]+(?:\.\d+)?)', 'Gift voucher')
 		]
 
+	def ebay(self):
+		self.re_total = r'^Total.*\n£([\d,]+(?:\.\d+)?)'
+		self.re_line_item = r'(?P<description>.*)\n*Total: £(?P<amount>[\d,]+(?:\.\d+)?)'
+
 	def myprotein(self):
 		self.re_total = r'^Total.*\n£([\d,]+(?:\.\d+)?)'
 		self.re_line_item = r'(?P<description>.*)\nQuantity: (?P<qty>[0-9]{1}).*Price: £(?P<amount>[\d,]+(?:\.\d+)?)'
