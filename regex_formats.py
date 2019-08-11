@@ -57,6 +57,7 @@ class RegexFormat():
 	def gymshark_uk(self):
 		self.re_total = r'^Total.*\n£([\d,]+(?:\.\d+)?)'
 		self.re_line_item = r'(?P<description>.*)\nQuantity: (?P<qty>[0-9]{1}).*\n(?P<size>.*)\n£(?P<amount>[\d,]+(?:\.\d+)?)'
+		self.re_delivery = r'^Shipping:.*\n£([\d,]+(?:\.\d+)?)'
 
 	def get_discounts(self, email_body):
 		discounts = []
