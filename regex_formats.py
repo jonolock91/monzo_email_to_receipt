@@ -45,6 +45,11 @@ class RegexFormat():
 			(r'^Gift Voucher.*\n(?P<amount>[-\d,]+(?:\.\d+)?)', 'Gift voucher')
 		]
 
+	def no_reply_bulk_powders(self):
+		self.re_total = r'^Grand Total.*\n£([\d,]+(?:\.\d+)?)'
+		self.re_line_item = r'(?P<description>.*)\n(?P<sku>.*)\n(?P<qty>[0-9]{1})\n£(?P<amount>[\d,]+(?:\.\d+)?)'
+		self.re_delivery = r'^Shipping & Handling.*\n£([\d,]+(?:\.\d+)?)'
+
 	def ebay(self):
 		self.re_total = r'^Total.*\n£([\d,]+(?:\.\d+)?)'
 		self.re_line_item = r'(?P<description>.*)\n*Total: £(?P<amount>[\d,]+(?:\.\d+)?)'
