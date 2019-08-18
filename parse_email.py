@@ -39,6 +39,9 @@ class Parse():
 
 		self.digit_pattern = r'/\d+\.?\d*/'
 
+		if not os.path.exists('old_emails'):
+			os.makedirs('old_emails')
+
 	def get_email_body(self, email):
 		with open(email, 'r') as f:
 			body = f.read()
@@ -197,6 +200,11 @@ class Parse():
 
 			# Create Monzo receipt
 			monzo_requests.create_receipt_for_transaction(transaction, receipt)
+
+		# Move parsed emails to another dir
+		for email in self.emails:
+			file_name = email.split('/')[-1]
+			os.rename(email, '{}/old_emails/{}'.format(os.getcwd(), file_name))
 
 
 if __name__ == '__main__':
