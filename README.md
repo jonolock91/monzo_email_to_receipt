@@ -4,7 +4,14 @@ This was created as a personal project to see how easy/hard it would be to parse
 
  tl;dr
  --
- Currently supports .txt emails and works for Asos, Myprotein, Gymshark emails. It should be fairly simple (hopefully) to add support for further emails.
+ Currently supports .txt emails and works for parsing the following:
+ - Asos
+ - Myprotein
+ - Gymshark
+ - Bulk powders
+ - eBay
+ 
+ It should be fairly simple (hopefully) to add support for further emails.
 
 ![Monzo receipt created using this project](https://github.com/jonolock91/monzo_email_to_receipt/blob/master/example.png?raw=true)
 
