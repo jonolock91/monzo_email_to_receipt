@@ -10,6 +10,7 @@ This was created as a personal project to see how easy/hard it would be to parse
  - Gymshark
  - Bulk powders
  - eBay
+ - Uber
  
  It should be fairly simple (hopefully) to add support for further emails.
 
