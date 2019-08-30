@@ -42,24 +42,29 @@ class MonzoRequest():
 			if transaction['merchant'] is None:
 				continue
 
-			# First try to match the transaction to the email using the date
-			# and total price.
-			if (
-				transaction['amount'] == -total_amount and
-				transaction['created'].startswith(transaction_date)
-			):
+			# First try to match the transaction to the email using the total
+			if transaction['amount'] == -total_amount:
 
-				# If merchant name matches we have a confirmed match
-				if (transaction['merchant']['name'].lower() in \
+				# Check the email date and transaction date are the same, as
+				# well as the merchant name.
+				if (
+					transaction['created'].startswith(transaction_date) and
+					transaction['merchant']['name'].lower() in \
 					email_merchant_name.lower()
 				):
 						matching_transaction = transaction
 						break
 
 				# If the merchant name doesn't match (e.g. eBay transactions
-				# aren't marked up as eBay on Monzo), but the date and total
-				# price do, then store it as a possible match, if no other
-				# transactions match we'll use this as a match.
+				# aren't marked up as eBay on Monzo)
+				# -
+				# OR
+				# -
+				# If the transaction date doesn't match the email date as it
+				# could have been sent days apart
+				# -
+				# Then as long as the total amount matches and only one match is
+				# found then we'll use it as a match.
 				else:
 					matching_transaction = transaction
 					possible_matches_count += 1
