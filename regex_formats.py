@@ -14,6 +14,7 @@ class RegexFormat():
 		# Defaults
 		self.re_discounts = []
 		self.re_delivery = None
+		self.ignore_line_items_full_amount = False
 
 		# Map merchant name to method
 		self.regex_fmt = getattr(self, merchant_name, False)
@@ -63,6 +64,15 @@ class RegexFormat():
 		self.re_total = r'^Total.*\n£([\d,]+(?:\.\d+)?)'
 		self.re_line_item = r'(?P<description>.*)\nQuantity: (?P<qty>[0-9]{1}).*\n(?P<size>.*)\n£(?P<amount>[\d,]+(?:\.\d+)?)'
 		self.re_delivery = r'^Shipping:.*\n£([\d,]+(?:\.\d+)?)'
+
+	def uber_receipts(self):
+		self.re_total = r'^Total.*\n£([\d,]+(?:\.\d+)?)'
+		self.re_line_item = r'(?P<description>.*)\n£(?P<amount>[\d,]+(?:\.\d+)?)'
+
+		# Special case which lets us skip line items totalling the full amount
+		# of the transaction. Allows us to crawl more line items whilst
+		# ignoring totals.
+		self.ignore_line_items_full_amount = True
 
 	def get_discounts(self, email_body):
 		discounts = []

@@ -96,13 +96,21 @@ class Parse():
 		amount = re.search(self.re_fmt.re_total, email_body, re.M).group(1)
 		return int(float(amount) * 100)
 
-	def get_line_items(self, email_body):
+	def get_line_items(self, email_body, total_price):
 		line_items = []
 
 		for match in re.finditer(self.re_fmt.re_line_item, email_body, re.M):
 			line_item = copy.deepcopy(line_item_format)
 			line_item['description'] = match.group('description')
 			line_item['amount'] = round(float(match.group('amount')) * 100)
+
+			# If we're aware a transaction cannot be the full amount of a
+			# transaction then we can skip it if flagged.
+			if (
+				self.re_fmt.ignore_line_items_full_amount and
+				line_item['amount'] == total_price
+			):
+				continue
 
 			try:
 				line_item['quantity'] = int(match.group('qty'))
@@ -174,7 +182,7 @@ class Parse():
 
 			# Get total price, line items and delivery
 			total_price = self.get_total(email_body)
-			line_items = self.get_line_items(email_body)
+			line_items = self.get_line_items(email_body, total_price)
 
 			delivery = self.get_delivery(email_body)
 			if delivery:
