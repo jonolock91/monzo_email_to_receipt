@@ -37,7 +37,7 @@ class Parse():
 				for e in os.listdir(self.emails_dir) if '.txt' in e
 			]
 
-		self.digit_pattern = r'/\d+\.?\d*/'
+		self.re_flags = re.M | re.I
 
 		if not os.path.exists('old_emails'):
 			os.makedirs('old_emails')
@@ -46,7 +46,12 @@ class Parse():
 		with open(email, 'r') as f:
 			body = f.read()
 
-		return body
+		# Remove spaced characters
+		updated_body = []
+		for line in body.split('\n'):
+			updated_body.append(line.strip())
+
+		return '\n'.join(updated_body)
 
 	def assemble_receipt(self, email_body, line_items, total_price):
 		"""Return a dictionary for a receipt which we will PUT to Monzo"""
@@ -93,13 +98,13 @@ class Parse():
 		return receipt
 
 	def get_total(self, email_body):
-		amount = re.search(self.re_fmt.re_total, email_body, re.M).group(1)
+		amount = re.search(self.re_fmt.re_total, email_body, self.re_flags).group(1)
 		return int(float(amount) * 100)
 
 	def get_line_items(self, email_body, total_price):
 		line_items = []
 
-		for match in re.finditer(self.re_fmt.re_line_item, email_body, re.M):
+		for match in re.finditer(self.re_fmt.re_line_item, email_body, self.re_flags):
 			line_item = copy.deepcopy(line_item_format)
 			line_item['description'] = match.group('description')
 			line_item['amount'] = round(float(match.group('amount')) * 100)
