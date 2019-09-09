@@ -38,12 +38,12 @@ class RegexFormat():
 		self.re_discounts = ['regex']
 
 	def asos_orders(self):
-		self.re_total = r'^Total.*\n([\d,]+(?:\.\d+)?)'
-		self.re_line_item = r'(?P<description>.*)\n(?P<amount>[\d,]+(?:\.\d+)?)\nQTY: (?P<qty>[0-9]{1})'
+		self.re_total = r'^Total.*\n£([\d,]+(?:\.\d+)?)'
+		self.re_line_item = r'(?P<description>.*)\n£(?P<amount>[\d,]+(?:\.\d+)?)\nQTY: (?P<qty>[0-9]{1})'
 
 		self.re_discounts = [
-			(r'^Discount.*\n(?P<amount>[\d,]+(?:\.\d+)?)', 'Discount'),
-			(r'^Gift Voucher.*\n(?P<amount>[-\d,]+(?:\.\d+)?)', 'Gift voucher')
+			(r'^Discount.*\n-£(?P<amount>[\d,]+(?:\.\d+)?)', 'Discount'),
+			(r'^Gift Voucher.*\n-£(?P<amount>[-\d,]+(?:\.\d+)?)', 'Gift voucher')
 		]
 
 	def no_reply_bulk_powders(self):
@@ -78,12 +78,16 @@ class RegexFormat():
 		discounts = []
 
 		for re_discount in self.re_discounts:
-			match = re.search(re_discount[0], email_body, re.M)
+			match = re.search(re_discount[0], email_body, re.M | re.I)
 
 			if match:
+				try:
+					desc = match.group('description')
+				except IndexError as e:
+					desc = re_discount[1]
+
 				discounts.append({
-					'description': match.group('description') if \
-						match.group('description') else re_discount[1],
+					'description': desc,
 					'amount': match.group('amount')
 				})
 
